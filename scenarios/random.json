@@ -1,0 +1,44 @@
+﻿{
+  "name": "random",
+  "description": "Procedurally generated random scenario with dynamic robot placements and reachable tasks",
+  "seed": 12345,
+  "width": 16,
+  "height": 12,
+  "cell_size": 1.0,
+  "layout": [
+    "################",
+    "#C.............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#..............#",
+    "#C............C#",
+    "################"
+  ],
+  "robots": [
+    {"id": "R1", "start_pos": [3, 2], "priority": 4.0, "battery": 100.0},
+    {"id": "R2", "start_pos": [12, 2], "priority": 3.0, "battery": 95.0},
+    {"id": "R3", "start_pos": [3, 9], "priority": 2.0, "battery": 90.0},
+    {"id": "R4", "start_pos": [12, 9], "priority": 1.0, "battery": 85.0}
+  ],
+  "tasks": [
+    {"id": "T01", "pickup_pos": [4, 2], "delivery_pos": [13, 9], "priority": 4, "item_type": "AlphaPod"},
+    {"id": "T02", "pickup_pos": [13, 2], "delivery_pos": [4, 9], "priority": 3, "item_type": "BetaPod"},
+    {"id": "T03", "pickup_pos": [4, 9], "delivery_pos": [13, 2], "priority": 3, "item_type": "GammaPod"},
+    {"id": "T04", "pickup_pos": [13, 9], "delivery_pos": [4, 2], "priority": 2, "item_type": "DeltaPod"},
+    {"id": "T05", "pickup_pos": [8, 2], "delivery_pos": [8, 9], "priority": 2, "item_type": "ExpressTote"},
+    {"id": "T06", "pickup_pos": [8, 9], "delivery_pos": [8, 2], "priority": 1, "item_type": "MedicalKit"},
+    {"id": "T07", "pickup_pos": [5, 2], "delivery_pos": [9, 9], "priority": 3, "item_type": "StandardParcel"},
+    {"id": "T08", "pickup_pos": [9, 2], "delivery_pos": [5, 9], "priority": 1, "item_type": "BulkCargo"}
+  ],
+  "obstacles": [],
+  "failures": [],
+  "communication": {
+    "delay": 0,
+    "drop_rate": 0.0
+  }
+}

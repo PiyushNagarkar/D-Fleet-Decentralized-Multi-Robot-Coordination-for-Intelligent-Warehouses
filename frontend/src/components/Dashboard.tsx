@@ -175,6 +175,23 @@ export const Dashboard: React.FC = () => {
             </select>
           </div>
 
+          {selectedScenario === "random.json" && (
+            <>
+              <div className="w-px h-5 bg-slate-800" />
+              <div className="flex items-center gap-2 bg-indigo-950/80 border border-indigo-500/50 px-2.5 py-1 rounded-lg">
+                <span className="text-[10px] text-indigo-300 font-black tracking-wider">RANDOM SCENARIO</span>
+                <span className="text-[10px] text-slate-300">Seed: <strong className="text-white">{controls.getLiveEngine().getSeed()}</strong></span>
+                <button
+                  onClick={() => controls.randomizeScenario()}
+                  title="Generate New Random Scenario"
+                  className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-0.5 rounded text-[10px] font-bold transition-all shadow-sm cursor-pointer active:scale-95"
+                >
+                  <span>🎲 Randomize</span>
+                </button>
+              </div>
+            </>
+          )}
+
           <div className="w-px h-5 bg-slate-800" />
 
           <div className="flex flex-col items-center">

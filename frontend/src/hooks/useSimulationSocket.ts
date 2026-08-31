@@ -277,6 +277,13 @@ export function useSimulationSocket() {
     setTelemetry(localEngineRef.current.getSnapshot());
   };
 
+  const handleRandomizeScenario = (customSeed?: number) => {
+    const seed = customSeed !== undefined ? customSeed : Math.floor(Math.random() * 900000) + 10000;
+    setSelectedScenario("random.json");
+    localEngineRef.current.loadScenario("random.json", seed);
+    setTelemetry(localEngineRef.current.getSnapshot());
+  };
+
   return {
     telemetry,
     isConnected,
@@ -290,6 +297,7 @@ export function useSimulationSocket() {
       reset: handleReset,
       step: handleStep,
       loadScenario: handleLoadScenario,
+      randomizeScenario: handleRandomizeScenario,
       injectObstacle: handleInjectObstacle,
       injectFailure: handleInjectFailure,
       getLiveEngine: () => localEngineRef.current,

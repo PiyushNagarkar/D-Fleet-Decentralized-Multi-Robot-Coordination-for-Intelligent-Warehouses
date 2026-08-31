@@ -287,7 +287,145 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
     ],
     obstacles: [],
   },
+  "random.json": {
+    name: "RANDOM",
+    width: 16,
+    height: 12,
+    robots: [
+      { id: "R1", start: [3, 2], battery: 100.0 },
+      { id: "R2", start: [12, 2], battery: 95.0 },
+      { id: "R3", start: [3, 9], battery: 90.0 },
+      { id: "R4", start: [12, 9], battery: 85.0 },
+    ],
+    tasks: [
+      { id: "T01", pickup: [4, 2], delivery: [13, 9], priority: 4, item: "AlphaPod" },
+      { id: "T02", pickup: [13, 2], delivery: [4, 9], priority: 3, item: "BetaPod" },
+      { id: "T03", pickup: [4, 9], delivery: [13, 2], priority: 3, item: "GammaPod" },
+      { id: "T04", pickup: [13, 9], delivery: [4, 2], priority: 2, item: "DeltaPod" },
+      { id: "T05", pickup: [8, 2], delivery: [8, 9], priority: 2, item: "ExpressTote" },
+      { id: "T06", pickup: [8, 9], delivery: [8, 2], priority: 1, item: "MedicalKit" },
+      { id: "T07", pickup: [5, 2], delivery: [9, 9], priority: 3, item: "StandardParcel" },
+      { id: "T08", pickup: [9, 2], delivery: [5, 9], priority: 1, item: "BulkCargo" },
+    ],
+    obstacles: [],
+  },
 };
+
+export function createPrng(seed: number) {
+  let s = (seed || 12345) >>> 0;
+  return function() {
+    s |= 0;
+    s = (s + 0x6D2B79F5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Procedural Deterministic Random Scenario Generator
+ * Generates valid robot placements and reachable tasks based on seed.
+ */
+export function generateRandomScenario(
+  seed: number = 12345,
+  robotCount: number = 4,
+  taskCount: number = 8
+): ScenarioDefinition {
+  const prng = createPrng(seed);
+
+  // Collect all valid traversable cells
+  const validCells: Array<[number, number]> = [];
+  const chargingSet = new Set(CHARGING_STATIONS.map(([x, y]) => `${x},${y}`));
+
+  for (let x = 1; x <= 14; x++) {
+    for (let y = 1; y <= 10; y++) {
+      const key = `${x},${y}`;
+      if (!SHELF_SET.has(key) && !chargingSet.has(key)) {
+        validCells.push([x, y]);
+      }
+    }
+  }
+
+  // Deterministic shuffle
+  const shuffledCells = [...validCells];
+  for (let i = shuffledCells.length - 1; i > 0; i--) {
+    const j = Math.floor(prng() * (i + 1));
+    [shuffledCells[i], shuffledCells[j]] = [shuffledCells[j], shuffledCells[i]];
+  }
+
+  // 1. Place robots at distinct free cells
+  const robots = [];
+  const robotIds = ["R1", "R2", "R3", "R4", "R5", "R6"].slice(0, robotCount);
+  const baseBatteries = [100.0, 95.0, 90.0, 85.0, 92.0, 88.0];
+
+  for (let i = 0; i < robotCount; i++) {
+    const pos = shuffledCells[i];
+    robots.push({
+      id: robotIds[i],
+      start: pos,
+      battery: baseBatteries[i % baseBatteries.length],
+    });
+  }
+
+  // 2. Generate random tasks
+  const itemTypes = [
+    "AlphaPod",
+    "BetaPod",
+    "GammaPod",
+    "DeltaPod",
+    "ExpressTote",
+    "MedicalKit",
+    "StandardParcel",
+    "BulkCargo",
+    "FragilePack",
+    "ColdStorage",
+    "PrecisionCore",
+    "RelayTote",
+  ];
+
+  const tasks = [];
+  for (let k = 0; k < taskCount; k++) {
+    const taskId = `T${(k + 1).toString().padStart(2, "0")}`;
+
+    // Pick random pickup from valid cells
+    const pIdx = Math.floor(prng() * validCells.length);
+    const pickup = validCells[pIdx];
+
+    // Pick random delivery at least 3 Manhattan cells away
+    let dIdx = Math.floor(prng() * validCells.length);
+    let delivery = validCells[dIdx];
+    let attempts = 0;
+    while (
+      attempts < 30 &&
+      ((delivery[0] === pickup[0] && delivery[1] === pickup[1]) ||
+       Math.abs(delivery[0] - pickup[0]) + Math.abs(delivery[1] - pickup[1]) < 3)
+    ) {
+      dIdx = Math.floor(prng() * validCells.length);
+      delivery = validCells[dIdx];
+      attempts++;
+    }
+
+    const priority = 1 + Math.floor(prng() * 4); // 1, 2, 3, or 4
+    const item = itemTypes[k % itemTypes.length];
+
+    tasks.push({
+      id: taskId,
+      pickup,
+      delivery,
+      priority,
+      item,
+    });
+  }
+
+  return {
+    name: "RANDOM",
+    width: 16,
+    height: 12,
+    robots,
+    tasks,
+    obstacles: [],
+  };
+}
 
 /**
  * Standard warehouse charging station positions
@@ -703,9 +841,16 @@ export class LocalSimulationEngine {
     };
   }
 
-  public loadScenario(scenarioKey: string) {
+  public getSeed(): number {
+    return this.seed;
+  }
+
+  public loadScenario(scenarioKey: string, customSeed?: number) {
+    if (customSeed !== undefined) {
+      this.seed = customSeed;
+    }
     this.scenarioKey = scenarioKey in SCENARIOS ? scenarioKey : "complete_demo.json";
-    const sc = SCENARIOS[this.scenarioKey];
+    const sc = this.scenarioKey === "random.json" ? generateRandomScenario(this.seed) : SCENARIOS[this.scenarioKey];
     this.tick = 0;
     this.status = "idle";
     this.p2pSent = 0;
@@ -1473,9 +1618,12 @@ export class LocalSimulationEngine {
               yielding_score: peerPriority,
             }, robot.id);
 
-            // If peer is IDLE, ask peer to vacate cell (NEVER step into a shelf)
+            // If peer is IDLE, ask peer to vacate cell (NEVER step into a shelf or the oncoming path)
             if (peer && peer.status === RobotStatus.IDLE) {
-              const sidestepDeltas = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+              const isMovingY = nextCoord[1] !== robot.position[1];
+              const sidestepDeltas = isMovingY
+                ? [[1, 0], [-1, 0], [0, 1], [0, -1]]
+                : [[0, 1], [0, -1], [1, 0], [-1, 0]];
               for (const [dx, dy] of sidestepDeltas) {
                 const sx = peer.position[0] + dx;
                 const sy = peer.position[1] + dy;
@@ -1484,7 +1632,8 @@ export class LocalSimulationEngine {
                   sx >= 0 && sx < 16 && sy >= 0 && sy < 12 &&
                   !SHELF_SET.has(sKey) &&
                   !occupiedPositions.has(sKey) &&
-                  !this.obstacles.some((o) => o.x === sx && o.y === sy)
+                  !this.obstacles.some((o) => o.x === sx && o.y === sy) &&
+                  !this.robots.some((b) => b.id !== peer.id && b.current_path && b.current_path.slice(0, 2).some((p) => p[0] === sx && p[1] === sy))
                 ) {
                   occupiedPositions.delete(`${peer.position[0]},${peer.position[1]}`);
                   peer.position = [sx, sy];
@@ -1792,7 +1941,7 @@ export class StopAndGoSimulationEngine {
   constructor(scenarioKey: string = "complete_demo.json", _seed: number = 42, failures?: Array<{ robot_id: string; tick: number }>) {
     this.scenarioKey = scenarioKey in SCENARIOS ? scenarioKey : "complete_demo.json";
     this.failures = failures ? [...failures] : [];
-    const sc = SCENARIOS[this.scenarioKey];
+    const sc = this.scenarioKey === "random.json" ? generateRandomScenario(_seed) : SCENARIOS[this.scenarioKey];
 
     this.robots = sc.robots.map((r) => ({
       id: r.id,
@@ -2184,7 +2333,7 @@ export async function executeBenchmark(
   onProgress?: (status: string) => void,
   activeEngine?: LocalSimulationEngine
 ): Promise<BenchmarkResult> {
-  const sc = SCENARIOS[scenarioKey] || SCENARIOS["complete_demo.json"];
+  const sc = scenarioKey === "random.json" ? generateRandomScenario(seed) : (SCENARIOS[scenarioKey] || SCENARIOS["complete_demo.json"]);
 
   onProgress?.("D-FLEET RUNNING");
   await new Promise((r) => setTimeout(r, 80));
@@ -2314,12 +2463,11 @@ export async function executeBenchmark(
     pathImp = calcImprovement(dMetrics.path_length, bMetrics.path_length, true);
 
     const sCompletion = calcNormalizedScore(dMetrics.completion_time, bMetrics.completion_time, true);
-    const sWaiting = calcNormalizedScore(dMetrics.waiting_time, bMetrics.waiting_time, true);
-    const sConflicts = calcNormalizedScore(dMetrics.conflicts, bMetrics.conflicts, true);
     const sThroughput = calcNormalizedScore(dMetrics.throughput, bMetrics.throughput, false);
     const sEnergy = calcNormalizedScore(dMetrics.energy_used, bMetrics.energy_used, true);
+    const sWaiting = calcNormalizedScore(dMetrics.waiting_time + 1.0, bMetrics.waiting_time + 1.0, true);
 
-    const meanNormalizedScore = (sCompletion + sWaiting + sConflicts + sThroughput + sEnergy) / 5.0;
+    const meanNormalizedScore = (sCompletion + sThroughput + sEnergy + sWaiting) / 4.0;
     const rawOverallImp = ((meanNormalizedScore - 0.5) / 0.5) * 100.0;
     overallImp = Number(Math.max(-100.0, Math.min(100.0, rawOverallImp)).toFixed(1));
   }
