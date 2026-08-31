@@ -1,0 +1,206 @@
+{
+  "name": "custom_rush",
+  "description": "Generated reproducible scenario: custom_rush with 4 robots and 8 tasks",
+  "seed": 123,
+  "width": 14,
+  "height": 10,
+  "cell_size": 1.0,
+  "layout": [
+    "##############",
+    "#C...P..P..D..#",
+    "#...########.#",
+    "#...#......#.#",
+    "#.I.#.I..I.#.#",
+    "#...#......#.#",
+    "#...########.#",
+    "#C...P..P..D..#",
+    "#............#",
+    "##############"
+  ],
+  "robots": [
+    {
+      "id": "R1",
+      "start_pos": [
+        1,
+        1
+      ],
+      "priority": 1,
+      "battery": 85.78545398276417
+    },
+    {
+      "id": "R2",
+      "start_pos": [
+        1,
+        7
+      ],
+      "priority": 2,
+      "battery": 86.30780016283948
+    },
+    {
+      "id": "R3",
+      "start_pos": [
+        12,
+        1
+      ],
+      "priority": 3,
+      "battery": 91.10862645505597
+    },
+    {
+      "id": "R4",
+      "start_pos": [
+        12,
+        7
+      ],
+      "priority": 1,
+      "battery": 86.61550352407659
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_gen_01",
+      "pickup_pos": [
+        4,
+        7
+      ],
+      "delivery_pos": [
+        11,
+        7
+      ],
+      "priority": 1,
+      "item_type": "pod_A"
+    },
+    {
+      "id": "task_gen_02",
+      "pickup_pos": [
+        4,
+        1
+      ],
+      "delivery_pos": [
+        11,
+        7
+      ],
+      "priority": 2,
+      "item_type": "pod_B"
+    },
+    {
+      "id": "task_gen_03",
+      "pickup_pos": [
+        4,
+        1
+      ],
+      "delivery_pos": [
+        11,
+        1
+      ],
+      "priority": 4,
+      "item_type": "pod_C"
+    },
+    {
+      "id": "task_gen_04",
+      "pickup_pos": [
+        4,
+        1
+      ],
+      "delivery_pos": [
+        11,
+        7
+      ],
+      "priority": 1,
+      "item_type": "pod_D"
+    },
+    {
+      "id": "task_gen_05",
+      "pickup_pos": [
+        4,
+        1
+      ],
+      "delivery_pos": [
+        10,
+        1
+      ],
+      "priority": 1,
+      "item_type": "pod_E"
+    },
+    {
+      "id": "task_gen_06",
+      "pickup_pos": [
+        5,
+        7
+      ],
+      "delivery_pos": [
+        11,
+        7
+      ],
+      "priority": 4,
+      "item_type": "pod_F"
+    },
+    {
+      "id": "task_gen_07",
+      "pickup_pos": [
+        4,
+        7
+      ],
+      "delivery_pos": [
+        11,
+        7
+      ],
+      "priority": 2,
+      "item_type": "pod_G"
+    },
+    {
+      "id": "task_gen_08",
+      "pickup_pos": [
+        6,
+        7
+      ],
+      "delivery_pos": [
+        10,
+        7
+      ],
+      "priority": 4,
+      "item_type": "pod_H"
+    }
+  ],
+  "obstacles": [
+    {
+      "id": "forklift_alpha",
+      "x": 3,
+      "y": 4,
+      "obstacle_type": "MOVING",
+      "start_tick": 0,
+      "duration": 60,
+      "waypoints": [
+        {
+          "x": 3,
+          "y": 4
+        },
+        {
+          "x": 4,
+          "y": 4
+        },
+        {
+          "x": 5,
+          "y": 4
+        },
+        {
+          "x": 4,
+          "y": 4
+        }
+      ],
+      "speed_ticks_per_step": 2
+    },
+    {
+      "id": "spill_spontaneous",
+      "x": 7,
+      "y": 7,
+      "obstacle_type": "STATIC",
+      "start_tick": 6,
+      "duration": 20
+    }
+  ],
+  "failures": [],
+  "communication": {
+    "delay": 0,
+    "packet_loss": 0.0
+  }
+}

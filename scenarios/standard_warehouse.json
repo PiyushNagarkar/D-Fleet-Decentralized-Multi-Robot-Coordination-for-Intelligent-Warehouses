@@ -1,0 +1,46 @@
+{
+  "name": "standard_warehouse",
+  "width": 20,
+  "height": 15,
+  "cell_size": 1.0,
+  "layout": [
+    "####################",
+    "#C.C.C........D.D.D#",
+    "#..................#",
+    "#.######.##.######.#",
+    "#.######.##.######.#",
+    "#...I..........I...#",
+    "#.######.##.######.#",
+    "#.######.##.######.#",
+    "#...I..........I...#",
+    "#.######.##.######.#",
+    "#.######.##.######.#",
+    "#..................#",
+    "#P.P.P........C.C.C#",
+    "####################",
+    "####################"
+  ],
+  "initial_obstacles": [
+    {
+      "id": "worker_patrol_1",
+      "x": 1,
+      "y": 2,
+      "obstacle_type": "MOVING",
+      "start_tick": 0,
+      "waypoints": [
+        {"x": 1, "y": 2},
+        {"x": 5, "y": 2},
+        {"x": 9, "y": 2},
+        {"x": 13, "y": 2},
+        {"x": 17, "y": 2},
+        {"x": 13, "y": 2},
+        {"x": 9, "y": 2},
+        {"x": 5, "y": 2}
+      ],
+      "speed_ticks_per_step": 1
+    }
+  ],
+  "metadata": {
+    "description": "Standard 20x15 multi-aisle warehouse with dedicated pick, drop, charge zones, and aisle intersections"
+  }
+}

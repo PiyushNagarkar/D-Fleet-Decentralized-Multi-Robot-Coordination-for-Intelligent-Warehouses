@@ -1,0 +1,34 @@
+{
+  "name": "battery",
+  "description": "Low and depleted battery levels requiring autonomous charging detours and replenishment",
+  "seed": 42,
+  "width": 12,
+  "height": 10,
+  "cell_size": 1.0,
+  "layout": [
+    "############",
+    "#C...P..D..#",
+    "#...######.#",
+    "#...#....#.#",
+    "#.I.#.I..#.#",
+    "#...#....#.#",
+    "#...######.#",
+    "#C...P..D..#",
+    "#..........#",
+    "############"
+  ],
+  "robots": [
+    {"id": "R1", "start_pos": [5, 4], "priority": 1, "battery": 24.0},
+    {"id": "R2", "start_pos": [8, 4], "priority": 2, "battery": 18.0}
+  ],
+  "tasks": [
+    {"id": "task_bat_1", "pickup_pos": [5, 1], "delivery_pos": [8, 1], "priority": 1, "item_type": "pod_A"},
+    {"id": "task_bat_2", "pickup_pos": [5, 7], "delivery_pos": [8, 7], "priority": 2, "item_type": "pod_B"}
+  ],
+  "obstacles": [],
+  "failures": [],
+  "communication": {
+    "delay": 0,
+    "packet_loss": 0.0
+  }
+}

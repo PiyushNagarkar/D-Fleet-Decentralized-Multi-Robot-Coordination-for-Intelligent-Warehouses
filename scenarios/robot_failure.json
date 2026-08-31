@@ -1,0 +1,39 @@
+{
+  "name": "robot_failure",
+  "description": "Mid-mission carrying robot hardware failure triggering peer detection and rescue dispatch",
+  "seed": 42,
+  "width": 12,
+  "height": 10,
+  "cell_size": 1.0,
+  "layout": [
+    "############",
+    "#C...P..D..#",
+    "#...######.#",
+    "#...#....#.#",
+    "#.I.#.I..#.#",
+    "#...#....#.#",
+    "#...######.#",
+    "#C...P..D..#",
+    "#..........#",
+    "############"
+  ],
+  "robots": [
+    {"id": "R1", "start_pos": [1, 1], "priority": 3, "battery": 100.0},
+    {"id": "R2", "start_pos": [1, 7], "priority": 1, "battery": 100.0}
+  ],
+  "tasks": [
+    {"id": "task_fail_1", "pickup_pos": [5, 1], "delivery_pos": [8, 7], "priority": 3, "item_type": "pod_fragile"}
+  ],
+  "obstacles": [],
+  "failures": [
+    {
+      "robot_id": "R1",
+      "tick": 12,
+      "duration": 50
+    }
+  ],
+  "communication": {
+    "delay": 0,
+    "packet_loss": 0.0
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "low_battery",
+  "description": "Low-Battery Task Reassignment Scenario: Robot R1 starts with 15% battery. The decentralized battery-energy feasibility model evaluates task distances and required charging energy, reassigning unsafe tasks to healthy robots while R1 navigates to a charging station, recharges, and rejoins the active fleet.",
+  "seed": 42,
+  "width": 16,
+  "height": 12,
+  "cell_size": 1.0,
+  "layout": [
+    "################",
+    "#C...P..P...D.C#",
+    "#...########...#",
+    "#...#......#...#",
+    "#.I.#..I.I.#.I.#",
+    "#...#......#...#",
+    "#...########...#",
+    "#.I.#..I.I.#.I.#",
+    "#...#......#...#",
+    "#...########...#",
+    "#C...P..P...D.C#",
+    "################"
+  ],
+  "robots": [
+    {"id": "R1", "start_pos": [1, 2], "priority": 1, "battery": 15.0},
+    {"id": "R2", "start_pos": [1, 10], "priority": 3, "battery": 90.0},
+    {"id": "R3", "start_pos": [14, 10], "priority": 2, "battery": 85.0},
+    {"id": "R4", "start_pos": [14, 1], "priority": 4, "battery": 95.0}
+  ],
+  "tasks": [
+    {"id": "T01", "pickup_pos": [9, 10], "delivery_pos": [13, 10], "priority": 4, "item_type": "CryoPod_A"},
+    {"id": "T02", "pickup_pos": [5, 1], "delivery_pos": [13, 1], "priority": 3, "item_type": "CryoPod_B"},
+    {"id": "T03", "pickup_pos": [5, 10], "delivery_pos": [1, 10], "priority": 3, "item_type": "CryoPod_C"},
+    {"id": "T04", "pickup_pos": [9, 1], "delivery_pos": [1, 1], "priority": 2, "item_type": "CryoPod_D"},
+    {"id": "T05", "pickup_pos": [4, 10], "delivery_pos": [13, 1], "priority": 2, "item_type": "CryoPod_E"},
+    {"id": "T06", "pickup_pos": [4, 1], "delivery_pos": [13, 10], "priority": 1, "item_type": "CryoPod_F"}
+  ],
+  "obstacles": [
+    {
+      "id": "spill_aisle_3",
+      "x": 8,
+      "y": 5,
+      "obstacle_type": "STATIC",
+      "start_tick": 0,
+      "duration": 100
+    }
+  ],
+  "failures": [],
+  "communication": {
+    "delay": 0,
+    "packet_loss": 0.0
+  }
+}

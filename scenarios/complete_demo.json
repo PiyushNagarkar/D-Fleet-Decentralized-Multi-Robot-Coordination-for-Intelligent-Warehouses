@@ -1,0 +1,79 @@
+{
+  "name": "complete_demo",
+  "description": "Flagship comprehensive scenario: 4 robots, 12 tasks, multiple intersections, dynamic obstacles, robot failure with carried-item rescue, battery variation, and network delay",
+  "seed": 42,
+  "width": 16,
+  "height": 12,
+  "cell_size": 1.0,
+  "layout": [
+    "################",
+    "#C...P..P...D..#",
+    "#...########...#",
+    "#...#......#...#",
+    "#.I.#..I.I.#.I.#",
+    "#...#......#...#",
+    "#...########...#",
+    "#.I.#..I.I.#.I.#",
+    "#...#......#...#",
+    "#...########...#",
+    "#C...P..P...D.C#",
+    "################"
+  ],
+  "robots": [
+    {"id": "R1", "start_pos": [1, 1], "priority": 4, "battery": 100.0},
+    {"id": "R2", "start_pos": [1, 10], "priority": 3, "battery": 85.0},
+    {"id": "R3", "start_pos": [14, 10], "priority": 2, "battery": 45.0},
+    {"id": "R4", "start_pos": [14, 1], "priority": 1, "battery": 90.0}
+  ],
+  "tasks": [
+    {"id": "task_demo_01", "pickup_pos": [5, 1], "delivery_pos": [12, 1], "priority": 3, "item_type": "pod_A"},
+    {"id": "task_demo_02", "pickup_pos": [8, 1], "delivery_pos": [12, 10], "priority": 2, "item_type": "pod_B"},
+    {"id": "task_demo_03", "pickup_pos": [5, 10], "delivery_pos": [12, 1], "priority": 1, "item_type": "pod_C"},
+    {"id": "task_demo_04", "pickup_pos": [8, 10], "delivery_pos": [12, 10], "priority": 4, "item_type": "pod_D"},
+    {"id": "task_demo_05", "pickup_pos": [5, 1], "delivery_pos": [12, 10], "priority": 2, "item_type": "pod_E"},
+    {"id": "task_demo_06", "pickup_pos": [8, 1], "delivery_pos": [12, 1], "priority": 3, "item_type": "pod_F"},
+    {"id": "task_demo_07", "pickup_pos": [5, 10], "delivery_pos": [12, 10], "priority": 1, "item_type": "pod_G"},
+    {"id": "task_demo_08", "pickup_pos": [8, 10], "delivery_pos": [12, 1], "priority": 2, "item_type": "pod_H"},
+    {"id": "task_demo_09", "pickup_pos": [5, 1], "delivery_pos": [12, 1], "priority": 3, "item_type": "pod_I"},
+    {"id": "task_demo_10", "pickup_pos": [8, 1], "delivery_pos": [12, 10], "priority": 1, "item_type": "pod_J"},
+    {"id": "task_demo_11", "pickup_pos": [5, 10], "delivery_pos": [12, 1], "priority": 2, "item_type": "pod_K"},
+    {"id": "task_demo_12", "pickup_pos": [8, 10], "delivery_pos": [12, 10], "priority": 4, "item_type": "pod_L"}
+  ],
+  "obstacles": [
+    {
+      "id": "forklift_main",
+      "x": 7,
+      "y": 4,
+      "obstacle_type": "MOVING",
+      "start_tick": 0,
+      "duration": 100,
+      "waypoints": [
+        {"x": 7, "y": 4},
+        {"x": 8, "y": 4},
+        {"x": 9, "y": 4},
+        {"x": 8, "y": 4}
+      ],
+      "speed_ticks_per_step": 2
+    },
+    {
+      "id": "aisle_spill",
+      "x": 3,
+      "y": 7,
+      "obstacle_type": "STATIC",
+      "start_tick": 8,
+      "duration": 30
+    }
+  ],
+  "failures": [
+    {
+      "robot_id": "R2",
+      "tick": 18,
+      "duration": 60
+    }
+  ],
+  "communication": {
+    "delay": 1,
+    "packet_loss": 0.05,
+    "jitter": 1
+  }
+}

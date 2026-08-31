@@ -1,0 +1,46 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dfleet-backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DATABASE_URL=sqlite:////app/data/dfleet.db
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - dfleet_data:/app/data
+      - ./scenarios:/app/scenarios:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/simulation/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - dfleet-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dfleet-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - dfleet-network
+
+volumes:
+  dfleet_data:
+    driver: local
+
+networks:
+  dfleet-network:
+    driver: bridge

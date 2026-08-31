@@ -1,0 +1,39 @@
+{
+  "name": "normal",
+  "description": "Baseline warehouse traffic with 3 robots and 6 standard delivery tasks",
+  "seed": 42,
+  "width": 12,
+  "height": 10,
+  "cell_size": 1.0,
+  "layout": [
+    "############",
+    "#C..P....D.#",
+    "#...######.#",
+    "#...#....#.#",
+    "#.I.#.I..#.#",
+    "#...#....#.#",
+    "#...######.#",
+    "#C..P....D.#",
+    "#..........#",
+    "############"
+  ],
+  "robots": [
+    {"id": "R1", "start_pos": [1, 1], "priority": 3, "battery": 100.0},
+    {"id": "R2", "start_pos": [1, 7], "priority": 2, "battery": 100.0},
+    {"id": "R3", "start_pos": [10, 4], "priority": 1, "battery": 100.0}
+  ],
+  "tasks": [
+    {"id": "task_norm_1", "pickup_pos": [4, 1], "delivery_pos": [9, 1], "priority": 1, "item_type": "pod_A"},
+    {"id": "task_norm_2", "pickup_pos": [4, 7], "delivery_pos": [9, 7], "priority": 2, "item_type": "pod_B"},
+    {"id": "task_norm_3", "pickup_pos": [4, 1], "delivery_pos": [9, 7], "priority": 1, "item_type": "pod_C"},
+    {"id": "task_norm_4", "pickup_pos": [4, 7], "delivery_pos": [9, 1], "priority": 3, "item_type": "pod_D"},
+    {"id": "task_norm_5", "pickup_pos": [4, 1], "delivery_pos": [9, 1], "priority": 2, "item_type": "pod_E"},
+    {"id": "task_norm_6", "pickup_pos": [4, 7], "delivery_pos": [9, 7], "priority": 1, "item_type": "pod_F"}
+  ],
+  "obstacles": [],
+  "failures": [],
+  "communication": {
+    "delay": 0,
+    "packet_loss": 0.0
+  }
+}

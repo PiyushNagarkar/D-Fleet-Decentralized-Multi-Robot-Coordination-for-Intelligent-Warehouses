@@ -1,0 +1,48 @@
+{
+  "name": "small_warehouse",
+  "width": 10,
+  "height": 10,
+  "cell_size": 1.0,
+  "layout": [
+    "##########",
+    "#C...P..D#",
+    "#.#.##.#.#",
+    "#.#....#.#",
+    "#.I.##.I.#",
+    "#.#....#.#",
+    "#.#.##.#.#",
+    "#C...P..D#",
+    "##########",
+    "##########"
+  ],
+  "initial_obstacles": [
+    {
+      "id": "moving_forklift_1",
+      "x": 3,
+      "y": 3,
+      "obstacle_type": "MOVING",
+      "start_tick": 0,
+      "duration": 100,
+      "waypoints": [
+        {"x": 3, "y": 3},
+        {"x": 4, "y": 3},
+        {"x": 5, "y": 3},
+        {"x": 6, "y": 3},
+        {"x": 5, "y": 3},
+        {"x": 4, "y": 3}
+      ],
+      "speed_ticks_per_step": 2
+    },
+    {
+      "id": "temporary_spill_1",
+      "x": 2,
+      "y": 5,
+      "obstacle_type": "STATIC",
+      "start_tick": 5,
+      "duration": 20
+    }
+  ],
+  "metadata": {
+    "description": "10x10 benchmark warehouse with dual pickup, delivery, charging stations, and dynamic obstacles"
+  }
+}

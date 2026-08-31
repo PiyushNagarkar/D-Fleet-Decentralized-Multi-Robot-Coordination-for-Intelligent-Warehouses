@@ -1,0 +1,58 @@
+{
+  "name": "dynamic_obstacles",
+  "description": "Dynamic forklift traffic and temporary spills triggering incremental D* Lite replanning",
+  "seed": 42,
+  "width": 12,
+  "height": 10,
+  "cell_size": 1.0,
+  "layout": [
+    "############",
+    "#C...P..D..#",
+    "#...######.#",
+    "#...#....#.#",
+    "#.I.#.I..#.#",
+    "#...#....#.#",
+    "#...######.#",
+    "#C...P..D..#",
+    "#..........#",
+    "############"
+  ],
+  "robots": [
+    {"id": "R1", "start_pos": [1, 1], "priority": 2, "battery": 100.0},
+    {"id": "R2", "start_pos": [1, 7], "priority": 1, "battery": 100.0}
+  ],
+  "tasks": [
+    {"id": "task_obs_1", "pickup_pos": [5, 1], "delivery_pos": [8, 1], "priority": 2, "item_type": "pod_A"},
+    {"id": "task_obs_2", "pickup_pos": [5, 7], "delivery_pos": [8, 7], "priority": 1, "item_type": "pod_B"}
+  ],
+  "obstacles": [
+    {
+      "id": "forklift_alpha",
+      "x": 3,
+      "y": 4,
+      "obstacle_type": "MOVING",
+      "start_tick": 0,
+      "duration": 50,
+      "waypoints": [
+        {"x": 3, "y": 4},
+        {"x": 4, "y": 4},
+        {"x": 5, "y": 4},
+        {"x": 4, "y": 4}
+      ],
+      "speed_ticks_per_step": 2
+    },
+    {
+      "id": "oil_spill_1",
+      "x": 6,
+      "y": 7,
+      "obstacle_type": "STATIC",
+      "start_tick": 4,
+      "duration": 25
+    }
+  ],
+  "failures": [],
+  "communication": {
+    "delay": 0,
+    "packet_loss": 0.0
+  }
+}
