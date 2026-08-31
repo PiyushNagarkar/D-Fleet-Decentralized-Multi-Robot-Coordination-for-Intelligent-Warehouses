@@ -1176,6 +1176,7 @@ export class LocalSimulationEngine {
       }
     }
 
+
     // P2P Reservation Arbitration: resolve head-on and mutual wait deadlocks
     for (const botA of this.robots) {
       if (botA.status === RobotStatus.FAILED || !botA.current_path || botA.current_path.length === 0) continue;
@@ -1216,10 +1217,13 @@ export class LocalSimulationEngine {
         this.sendP2PMessage(passing.id, yielding.id, MessageType.RESERVATION_REQUEST);
         this.sendP2PMessage(yielding.id, passing.id, MessageType.YIELD_REQUEST);
 
-        const blocked = staticAndFailedObstacles.concat([[passing.position[0], passing.position[1]]]);
         if (yielding.targetGoal) {
+          const isDestPassing = yielding.targetGoal[0] === passing.position[0] && yielding.targetGoal[1] === passing.position[1];
+          const blocked = isDestPassing
+            ? staticAndFailedObstacles
+            : staticAndFailedObstacles.concat([[passing.position[0], passing.position[1]]]);
           const alt = computeDStarPath(yielding.position, yielding.targetGoal, blocked);
-          if (alt.length > 0) {
+          if (alt.length > 0 && !(alt[0][0] === passing.position[0] && alt[0][1] === passing.position[1])) {
             yielding.current_path = alt;
             yielding.waitingTicks = 0;
             this.replansCount++;
@@ -1243,7 +1247,8 @@ export class LocalSimulationEngine {
                 !occupiedPositions.has(skey) &&
                 !(passing.current_path && passing.current_path.some((p: [number, number]) => p[0] === sx && p[1] === sy))
               ) {
-                yielding.current_path = [[sx, sy], ...computeDStarPath([sx, sy], yielding.targetGoal, blocked)];
+                const afterSidePath = computeDStarPath([sx, sy], yielding.targetGoal, blocked);
+                yielding.current_path = [[sx, sy], ...afterSidePath];
                 yielding.waitingTicks = 0;
                 this.replansCount++;
                 break;
@@ -1521,6 +1526,8 @@ export class LocalSimulationEngine {
                 occupiedPositions.set(sKey, robot.id);
                 robot.waitingTicks = 0;
                 if (robot.targetGoal) {
+                  const goalX = robot.targetGoal[0];
+                  const goalY = robot.targetGoal[1];
                   const peerBlocked: Array<[number, number]> = [
                     [nextCoord[0], nextCoord[1]],
                   ];
@@ -1528,21 +1535,35 @@ export class LocalSimulationEngine {
                   if (nextCoord[1] === robot.position[1]) {
                     const signX = Math.sign(nextCoord[0] - robot.position[0]) || 1;
                     for (let step = 0; step <= 6; step++) {
-                      peerBlocked.push([robot.position[0] + signX * step, robot.position[1]]);
+                      const bx = robot.position[0] + signX * step;
+                      const by = robot.position[1];
+                      if (!(bx === goalX && by === goalY)) {
+                        peerBlocked.push([bx, by]);
+                      }
                     }
                   }
                   // If moving vertically, block opposing column ahead so robot uses alternate parallel column
                   if (nextCoord[0] === robot.position[0]) {
                     const signY = Math.sign(nextCoord[1] - robot.position[1]) || 1;
                     for (let step = 0; step <= 6; step++) {
-                      peerBlocked.push([robot.position[0], robot.position[1] + signY * step]);
+                      const bx = robot.position[0];
+                      const by = robot.position[1] + signY * step;
+                      if (!(bx === goalX && by === goalY)) {
+                        peerBlocked.push([bx, by]);
+                      }
                     }
                   }
 
                   const blockedPoints: Array<[number, number]> = this.obstacles
                     .map((o) => [o.x, o.y] as [number, number])
                     .concat(peerBlocked);
-                  robot.current_path = computeDStarPath(robot.position, robot.targetGoal, blockedPoints);
+                  let altPath = computeDStarPath(robot.position, robot.targetGoal, blockedPoints);
+                  if (altPath.length === 0) {
+                    altPath = computeDStarPath(robot.position, robot.targetGoal, staticAndFailedObstacles.concat([[nextCoord[0], nextCoord[1]]]));
+                  }
+                  if (altPath.length > 0) {
+                    robot.current_path = altPath;
+                  }
                 }
                 this.addEvent("LATERAL_BYPASS_YIELD", { robot_id: robot.id, bypass_pos: [sx, sy] }, robot.id);
                 sidestepped = true;
